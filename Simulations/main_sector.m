@@ -1,4 +1,5 @@
 clear; clc;
+addpath(fullfile(fileparts(mfilename('fullpath')), '..', 'shared'));
 
 %% Inputs
 b = 1; % dynamics: x_{k+1} = x_k + b*u_k - w_k
@@ -65,22 +66,11 @@ dim_flag = '1D';
     finite_horizon_dp(x_vec,[],SASPM_decoupled,SACM_decoupled,N,gamma,alpha,beta,dim_flag);
 
 % Map 1D policy to 2D
-U_decoupled = zeros(size(U_coupled));
-for k = 1:N-1
-    for i = 1:length(x_vec)
-        for j = 1:length(x_vec)
-            state_idx = sub2ind(size(X1),i,j);
-            ui = U_decoupled_1D(i,k);
-            uj = U_decoupled_1D(j,k);
-            action_idx = sub2ind(size(U1),ui,uj);
-            U_decoupled(state_idx,k) = action_idx;
-        end
-    end
-end
+U_decoupled = map_1D_policy_to_2D(U_decoupled_1D, x_vec, X1, U1, N);
 
 % policy evaluation
 J_decoupled = decoupled_policy_evaluation(X1,X2,U_decoupled,...
-    SASPM_coupled,SACM_coupled,N,gamma,alpha,beta);
+    SASPM_coupled,SACM_coupled,N,gamma,alpha,beta,'2D');
 
 %% Monte Carlo Policy Evaluation 
 [cost_coupled,cost_decoupled,cost_online] = monte_carlo_policy_evaluation(X1,X2,U1,U2,...

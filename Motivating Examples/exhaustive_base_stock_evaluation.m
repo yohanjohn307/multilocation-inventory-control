@@ -16,18 +16,7 @@ function [J_basestock,U_basestock] = exhaustive_base_stock_evaluation(X1,X2,U1,U
         end
 
         % map 1D policy to 2D
-        U_decoupled = zeros(numel(X1),N-1);
-        for k = 1:N-1
-            for i = 1:length(x_vec)
-                for j = 1:length(x_vec)
-                    state_idx = sub2ind(size(X1),i,j);
-                    ui = U_decoupled_1D(i,k);
-                    uj = U_decoupled_1D(j,k);
-                    action_idx = sub2ind(size(U1),ui,uj);
-                    U_decoupled(state_idx,k) = action_idx;
-                end
-            end
-        end
+        U_decoupled = map_1D_policy_to_2D(U_decoupled_1D, x_vec, X1, U1, N);
         
         % policy evaluation
         dim_flag = '2D';
