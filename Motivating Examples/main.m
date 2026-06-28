@@ -1,4 +1,5 @@
 clear; clc;
+addpath(fullfile(fileparts(mfilename('fullpath')), '..', 'shared'));
 
 %% Inputs
 b = 1; % dynamics: x_{k+1} = x_k + b*u_k - w_k
